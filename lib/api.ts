@@ -33,4 +33,31 @@ axios.interceptors.request.use(
   },
 );
 
+// Mock responses
+axios.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    const pathname = error.config?.url;
+
+    switch (pathname) {
+      case "/auth/login":
+        return Promise.resolve({
+          data: {
+            user: MOCK_USER,
+            accessToken: JSON.stringify(MOCK_USER),
+            refreshToken: JSON.stringify(MOCK_USER),
+          },
+        });
+    }
+
+    throw error;
+  },
+);
+
 export default axios;
+
+const MOCK_USER = {
+  id: 1,
+  email: "test@example.com",
+  name: "Test User",
+};

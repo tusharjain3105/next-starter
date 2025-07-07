@@ -11,7 +11,7 @@ export interface User {
   email: string;
 }
 
-const AUTH_TOKEN_KEY = "auth-token";
+const AUTH_TOKEN_KEY = "access-token";
 const REFRESH_TOKEN_KEY = "refresh-token";
 
 // TODO: Implement auth services
