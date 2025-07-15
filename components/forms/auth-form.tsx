@@ -1,7 +1,7 @@
 "use client";
 
 import { useBoolean } from "@/hooks/useBoolean";
-import authService from "@/lib/services/auth.service";
+import authService, { User } from "@/lib/services/auth.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -18,6 +18,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { router } from "@/lib/router";
+import useAuth from "@/lib/stores/auth.store";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email().toLowerCase(),
@@ -43,15 +44,18 @@ const config = {
     onSubmit: async (
       data: z.infer<typeof loginSchema>,
       register: UseFormReturn<typeof loginSchema>,
+      setUser: (user: User | null) => void,
     ) => {
-      const [error] = await authService.login(data.email, data.password);
+      const [error, user] = await authService.login(data.email, data.password);
 
+      console.log(error, user);
       if (error) {
         register.setError("root", {
           type: "manual",
           message: error.message,
         });
       } else {
+        setUser(user);
         router.replace("/");
       }
     },
@@ -80,6 +84,7 @@ const AuthForm = () => {
   const mode = pathname.slice(1);
   const { schema, onSubmit, primaryButtonText, primaryButtonTextLoading } =
     config[mode as keyof typeof config];
+  const { setUser } = useAuth();
 
   const register = useForm({
     resolver: zodResolver(schema),
@@ -89,7 +94,7 @@ const AuthForm = () => {
       <form
         onSubmit={register.handleSubmit((e) =>
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onSubmit(e as any, register as any),
+          onSubmit(e as any, register as any, setUser),
         )}
         className="grid gap-2"
       >

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { User } from "../services/auth.service";
+import authService, { User } from "../services/auth.service";
 
 interface AuthStore {
   user: User | null;
@@ -7,6 +7,7 @@ interface AuthStore {
   isLoading: boolean;
   startLoading: () => void;
   isAuthenticated: boolean;
+  logout: () => void;
 }
 
 const useAuth = create<AuthStore>((set) => ({
@@ -15,6 +16,10 @@ const useAuth = create<AuthStore>((set) => ({
   isLoading: false,
   startLoading: () => set({ isLoading: true }),
   isAuthenticated: false,
+  logout: () => {
+    authService.logout();
+    set({ user: null, isAuthenticated: false });
+  },
 }));
 
 export default useAuth;
