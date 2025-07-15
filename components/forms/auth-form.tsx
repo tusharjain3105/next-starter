@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import router from "next/router";
+import { router } from "@/lib/router";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email().toLowerCase(),

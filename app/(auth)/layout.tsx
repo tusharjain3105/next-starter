@@ -1,16 +1,16 @@
 "use client";
 
+import { router } from "@/lib/router";
 import useAuth from "@/lib/stores/auth.store";
-import LoadingPage from "../(main)/loading";
-import router from "next/router";
-import { useEffect } from "react";
 import { getCookie } from "cookies-next";
+import { useLayoutEffect } from "react";
+import LoadingPage from "../(main)/loading";
 
 const AuthPage = ({ children }: { children: React.ReactNode }) => {
   const { isLoading, isAuthenticated } = useAuth();
   const shouldRedirectToRedirectUrl = !isLoading && isAuthenticated;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (shouldRedirectToRedirectUrl) {
       const redirectUrl = getCookie("redirect-url");
       router.replace((redirectUrl as string) ?? "/");
